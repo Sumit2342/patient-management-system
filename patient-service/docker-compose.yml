@@ -6,9 +6,9 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: postgres
     ports:
-      - "5000:5432" # or 5432:5432 if you prefer
+      - "5000:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d postgres"]
       interval: 5s
@@ -23,6 +23,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres?sslmode=disable&options=-c%20TimeZone%3DUTC
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_SQL_INIT_MODE: always
+      SPRING_JPA_SHOW_SQL: true
     depends_on:
       postgres:
         condition: service_healthy

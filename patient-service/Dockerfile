@@ -2,15 +2,18 @@ FROM maven:3.9.9-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
+# Suppress "Downloading from central..." logs (only show errors/warnings)
+ENV MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+
 COPY pom.xml .
 
-RUN mvn dependency:go-offline -B
+RUN mvn dependency:go-offline -B -q
 
 COPY src ./src
 
-RUN mvn clean package
+RUN mvn clean package -B -q -DskipTests
 
-FROM openjdk:21-jdk AS runner
+FROM eclipse-temurin:21-jre AS runner
 
 WORKDIR /app
 
